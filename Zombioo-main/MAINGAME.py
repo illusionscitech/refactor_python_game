@@ -263,26 +263,29 @@ class Soldier(pygame.sprite.Sprite):
         self.idling_counter = 0
 
         # IDLE RUN JUMP DEATH FLIP空转跳跃死亡翻转
-        animation_types = ['Idle', 'Run', 'Jump', 'Death']
-        for animation in animation_types:
-            # LIST
-            temp_list = []
-            # SUBFOLDER
-            num_of_frames = len(os.listdir(
-                f'img/{self.char_type}/{animation}'))
-            for i in range(num_of_frames):
-                img = pygame.image.load(
-                    f'img/{self.char_type}/{animation}/{i}.png').convert_alpha()
-                img = pygame.transform.scale(
-                    img, (int(img.get_width() * scale), int(img.get_height() * scale)))
-                temp_list.append(img)
-            self.animation_list.append(temp_list)
+        self.animation_list = self.load_animation(char_type, scale)
 
         self.image = self.animation_list[self.action][self.frame_index]
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.width = self.image.get_width()
         self.height = self.image.get_height()
+
+    #模块化加载动画
+    def load_animation(self, char_type, scale):
+        animation_types = ['Idle', 'Run', 'Jump', 'Death']
+        animation_list = []
+
+        for animation in animation_types:
+            temp_list = []
+            num_of_frames = len(os.listdir(f'img/{char_type}/{animation}'))
+            for i in range(num_of_frames):
+                img = pygame.image.load(f'img/{char_type}/{animation}/{i}.png').convert_alpha()
+                img = pygame.transform.scale(img, (int(img.get_width() * scale), int(img.get_height() * scale)))
+                temp_list.append(img)
+            animation_list.append(temp_list)
+
+        return animation_list
 
     #更新士兵的动画和状态。在这个方法中，会调用update_animation()和check_alive()方法。
     def update(self):
