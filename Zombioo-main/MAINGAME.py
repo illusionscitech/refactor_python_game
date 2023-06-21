@@ -887,13 +887,17 @@ for row in range(ROWS):
     r = [-1] * COLS
     world_data.append(r)
 # load in level data and create world
-with open(f'level/level{level}_data.csv', newline='') as csvfile:
-    reader = csv.reader(csvfile, delimiter=',')
-    for x, row in enumerate(reader):
-        for y, tile in enumerate(row):
-            world_data[x][y] = int(tile)
-world = World()
-player, health_bar = world.process_data(world_data)
+def load_world_data(level):
+    with open(f'level/level{level}_data.csv', newline='') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        for x, row in enumerate(reader):
+            for y, tile in enumerate(row):
+                world_data[x][y] = int(tile)
+    world = World()
+    player, health_bar1 = world.process_data(world_data)
+    return world, player, health_bar1
+
+world, player, health_bar = load_world_data(level)
 
 #它将初始游戏状态设置为"start_menu"，并初始化了一些变量。
 game_state = "start_menu"
@@ -1018,13 +1022,8 @@ while run:
                 world_data = reset_level()
                 if level <= MAX_LEVELS:
                     # CREATING WORLD
-                    with open(f'level/level{level}_data.csv', newline='') as csvfile:
-                        reader = csv.reader(csvfile, delimiter=',')
-                        for x, row in enumerate(reader):
-                            for y, tile in enumerate(row):
-                                world_data[x][y] = int(tile)
-                    world = World()
-                    player, health_bar = world.process_data(world_data)
+                    world, player, health_bar = load_world_data(level)
+
         else:  #如果玩家死亡，代码显示"YOU DIED!"的消息，并提供重新开始关卡或退出游戏的选项
             screen_scroll = 0
             draw_text('YOU DIED!', YOUDIED, WHITE, 260, 150), GAMEOVER.stop()
@@ -1037,13 +1036,8 @@ while run:
                 bg_scroll = 0
                 world_data = reset_level()
                 #CREATE WORLD DATA
-                with open(f'level/level{level}_data.csv', newline='') as csvfile:
-                    reader = csv.reader(csvfile, delimiter=',')
-                    for x, row in enumerate(reader):
-                        for y, tile in enumerate(row):
-                            world_data[x][y] = int(tile)
-                world = World()
-                player, health_bar = world.process_data(world_data)
+                world, player, health_bar = load_world_data(level)
+
 
     for event in pygame.event.get():
         # QUIT GAME
