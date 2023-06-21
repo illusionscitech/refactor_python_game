@@ -1,5 +1,8 @@
 import pygame 
 
+# Constants
+SCALE = 0.5
+LEFT_MOUSE_BUTTON = 0
 
 #button class
 class Button():
@@ -21,16 +24,14 @@ class Button():
 
 		#check mouseover获取鼠标位置
 		if self.rect.collidepoint(pos):
-			if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+			if pygame.mouse.get_pressed()[LEFT_MOUSE_BUTTON] == 1 and self.clicked == False:
 				action = True
 				self.clicked = True
 
-		if pygame.mouse.get_pressed()[0] == 0:
+		if pygame.mouse.get_pressed()[LEFT_MOUSE_BUTTON] == 0:
 			self.clicked = False
 
 		#drawing button绘图按钮
 		surface.blit(self.image, (self.rect.x, self.rect.y))
 
 		return action
-        
-        
