@@ -230,6 +230,8 @@ def reset_level():
 
     return data
 
+# 定义常量
+MAX_HEALTH = 130
 #继承自pygame.sprite.Sprite。它表示游戏中的士兵角色，具有移动、射击、动画更新等功能。
 class Soldier(pygame.sprite.Sprite):
     #初始化士兵对象的属性。其中包括角色类型（char_type），位置（x和y），缩放比例（scale），速度（speed），弹药数量（ammo），手雷数量（grenades）和燃烧瓶数量（molotovs）等
@@ -243,7 +245,7 @@ class Soldier(pygame.sprite.Sprite):
         self.shoot_cooldown = 0
         self.grenades = grenades
         self.molotovs = molotovs
-        self.health = 130
+        self.health = MAX_HEALTH  # 使用常量变量
         self.max_health = self.health
         self.direction = 1
         self.vel_y = 0
