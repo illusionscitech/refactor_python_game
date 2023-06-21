@@ -686,6 +686,29 @@ def info_show():
         draw_text('collect special statues', LORE, WHITE, 680, 510)
         draw_text(' to finish it', LORE, WHITE, 680, 530)
         draw_text('ANGEL STATUE', LOREsmall, WHITE, 975, 575)
+#合并重复方法
+def update_movement(self):
+    self.vel_y += GRAVITY
+    dx = self.direction * self.speed
+    dy = self.vel_y
+
+    for tile in world.obstacle_list:
+        if tile[1].colliderect(self.rect.x + dx, self.rect.y, self.width, self.height):
+            self.direction *= -1
+            dx = self.direction * self.speed
+        if tile[1].colliderect(self.rect.x, self.rect.y + dy, self.width, self.height):
+            self.speed = 0
+            if self.vel_y < 0:
+                self.vel_y = 0
+                dy = tile[1].bottom - self.rect.top
+            # Check height
+            elif self.vel_y >= 0:
+                self.vel_y = 0
+                dy = tile[1].top - self.rect.bottom
+
+    self.rect.x += dx + screen_scroll
+    self.rect.y += dy
+
 #表示手雷的类，具有抛出和爆炸的功能
 class Grenade(pygame.sprite.Sprite):
     def __init__(self, x, y, direction):
@@ -701,27 +724,8 @@ class Grenade(pygame.sprite.Sprite):
         self.direction = direction
 
     def update(self):
-        self.vel_y += GRAVITY
-        dx = self.direction * self.speed
-        dy = self.vel_y
-
-        for tile in world.obstacle_list:
-            if tile[1].colliderect(self.rect.x + dx, self.rect.y, self.width, self.height):
-                self.direction *= -1
-                dx = self.direction * self.speed
-            if tile[1].colliderect(self.rect.x, self.rect.y + dy, self.width, self.height):
-                self.speed = 0
-                if self.vel_y < 0:
-                    self.vel_y = 0
-                    dy = tile[1].bottom - self.rect.top
-                # Check height
-                elif self.vel_y >= 0:
-                    self.vel_y = 0
-                    dy = tile[1].top - self.rect.bottom
-
+        update_movement(self)
         # GRENADE POS
-        self.rect.x += dx + screen_scroll
-        self.rect.y += dy
 
         # CD GRENADE TIMER
         self.timer -= 0.95
@@ -738,6 +742,8 @@ class Grenade(pygame.sprite.Sprite):
                         abs(self.rect.centery - enemy.rect.centery) < TILE_SIZE * 3:
                     enemy.health -= 1000
                     GRUNTING.play()
+
+
 #表示燃烧瓶的类，具有抛出和爆炸的功能。
 class Molotov(pygame.sprite.Sprite):
     def __init__(self, x, y, direction):
@@ -753,27 +759,9 @@ class Molotov(pygame.sprite.Sprite):
         self.direction = direction
 
     def update(self):
-        self.vel_y += GRAVITY
-        dx = self.direction * self.speed
-        dy = self.vel_y
-
-        for tile in world.obstacle_list:
-            if tile[1].colliderect(self.rect.x + dx, self.rect.y, self.width, self.height):
-                self.direction *= -1
-                dx = self.direction * self.speed
-            if tile[1].colliderect(self.rect.x, self.rect.y + dy, self.width, self.height):
-                self.speed = 0
-                if self.vel_y < 0:
-                    self.vel_y = 0
-                    dy = tile[1].bottom - self.rect.top
-                # Check height
-                elif self.vel_y >= 0:
-                    self.vel_y = 0
-                    dy = tile[1].top - self.rect.bottom
-
+        update_movement(self)
         # MOLOTOV r
-        self.rect.x += dx + screen_scroll
-        self.rect.y += dy
+
 
         # CD MOLOTOV TIMER
         self.timer -= 2
