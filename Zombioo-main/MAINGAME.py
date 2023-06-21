@@ -293,7 +293,6 @@ class Soldier(pygame.sprite.Sprite):
 
     #处理士兵的移动。根据传入的moving_left和moving_right参数决定士兵的水平移动方向。方法中还包括处理士兵跳跃和重力的逻辑，以及与障碍物的碰撞检测。
     def move(self, moving_left, moving_right):
-        screen_scroll = 0
         dx = 0
         dy = 0
 
@@ -320,6 +319,17 @@ class Soldier(pygame.sprite.Sprite):
             self.vel_y
         dy += self.vel_y
 
+        # self.rect.x += dx
+        # self.rect.y += dy
+
+        # Scroll background
+        screen_scroll, level_complete = self.handle_scroll(dx,dy)
+        return screen_scroll, level_complete
+
+    def handle_scroll(self, dx, dy):
+        screen_scroll = 0
+        level_complete = False
+
         # COLLISION
         for tile in world.obstacle_list:
             if tile[1].colliderect(self.rect.x + dx, self.rect.y, self.width, self.height):
@@ -339,7 +349,6 @@ class Soldier(pygame.sprite.Sprite):
         if pygame.sprite.spritecollide(self, water_group, False):
             self.health = 0
 
-        level_complete = False
         if pygame.sprite.spritecollide(self, exit_group, False):
             level_complete = True
             NEXTLEVEL.play()
@@ -355,12 +364,13 @@ class Soldier(pygame.sprite.Sprite):
         self.rect.y += dy
 
         if self.char_type == 'player':
-            if (self.rect.right > SCREEN_WIDTH - SCROLL_THRESH and bg_scroll < (world.level_length * TILE_SIZE) - SCREEN_WIDTH)\
+            if (self.rect.right > SCREEN_WIDTH - SCROLL_THRESH and bg_scroll < (world.level_length * TILE_SIZE) - SCREEN_WIDTH) \
                     or (self.rect.left < SCROLL_THRESH and bg_scroll > abs(dx)):
                 self.rect.x -= dx
                 screen_scroll = -dx
 
         return screen_scroll, level_complete
+
 
     #处理士兵射击行为。根据射击冷却时间和弹药数量，创建子弹对象并添加到bullet_group中，同时播放射击音效和减少弹药数量
     def shoot(self):
