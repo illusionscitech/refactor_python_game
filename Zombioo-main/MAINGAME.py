@@ -500,8 +500,8 @@ class World():
                             'Health', x * TILE_SIZE, y * TILE_SIZE)
                         item_box_group.add(item_box)
                     elif tile == 20:  # create exit
-                        exit = Exit(img, x * TILE_SIZE, y * TILE_SIZE)
-                        exit_group.add(exit)
+                        exit_obj = Exit(img, x * TILE_SIZE, y * TILE_SIZE)
+                        exit_group.add(exit_obj)
 
         return player, health_bar
 
