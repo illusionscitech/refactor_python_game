@@ -1,3 +1,4 @@
 # refactor_python_game
 Изучите рефакторинг кода Python
-The purpose of this repository is to refactor the python project code, the source project address is this
+
+The purpose of this repository is to practice python project code refactoring, the source project address is [https://github.com/jankupczyk/Zombioo](https://github.com/jankupczyk/Zombioo)
