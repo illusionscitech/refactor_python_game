@@ -7,7 +7,7 @@
 import random
 
 #处理士兵的AI行为。当士兵与玩家角色的视野矩形相交时，进行射击；否则，根据移动方向进行移动。此外，还包括处理士兵的闲置状态和视野范围的更新。
-def ai(self,player,TILE_SIZE,screen_scroll):
+def ai(self, player, tile_size, screen_scroll):
     if self.alive and player.alive:
         if self.idling == False and random.randint(1, 400) == 1:
             self.update_action(0)  # IDLE
@@ -30,7 +30,7 @@ def ai(self,player,TILE_SIZE,screen_scroll):
                 self.vision.center = (
                     self.rect.centerx + 75 * self.direction, self.rect.centery)
 
-                if self.move_counter > TILE_SIZE:
+                if self.move_counter > tile_size:
                     self.direction *= -1
                     self.move_counter *= -1
             else:

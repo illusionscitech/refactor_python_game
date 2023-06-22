@@ -792,10 +792,10 @@ class MoloExplosion(pygame.sprite.Sprite):
     def update(self):
         self.rect.x += screen_scroll
 
-        MOLOEXPLOSION_SPEED = 23
+        moloexplosion_speed = 23
         self.counter += 1
 
-        if self.counter >= MOLOEXPLOSION_SPEED:
+        if self.counter >= moloexplosion_speed:
             self.counter = 0
             self.frame_index += 1
             if self.frame_index >= len(self.images):
