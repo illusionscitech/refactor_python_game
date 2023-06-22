@@ -197,17 +197,35 @@ def draw_text(text, font, text_col, x, y):
     screen.blit(img, (x, y))
 
 #这个函数用于绘制背景图像。它首先填充屏幕背景颜色，然后根据背景滚动值（bg_scroll）绘制天空、山脉和树木的图像。
-def draw_bg():
-    screen.fill(BG)
+def draw_sky():
     width = sky_img.get_width()
     for x in range(5):
         screen.blit(sky_img, ((x * width) - bg_scroll * 0.5, 0))
+
+def draw_mountains():
+    width = sky_img.get_width()
+    for x in range(5):
         screen.blit(mountain_img, ((x * width) - bg_scroll * 0.6,
                                    SCREEN_HEIGHT - mountain_img.get_height() - 300))
+
+def draw_pine1():
+    width = sky_img.get_width()
+    for x in range(5):
         screen.blit(pine1_img, ((x * width) - bg_scroll * 0.7,
                                 SCREEN_HEIGHT - pine1_img.get_height() - 150))
+
+def draw_pine2():
+    width = sky_img.get_width()
+    for x in range(5):
         screen.blit(pine2_img, ((x * width) - bg_scroll * 0.8,
                                 SCREEN_HEIGHT - pine2_img.get_height()))
+
+def draw_bg():
+    screen.fill(BG)
+    draw_sky()
+    draw_mountains()
+    draw_pine1()
+    draw_pine2()
 
 
 # LEVEL RESET这个函数用于重置关卡。它清空了一些游戏元素的组（如敌人、子弹、道具等），并返回一个二维数组data。这个数组用于存储关卡地图的布局。
@@ -823,7 +841,7 @@ def takescreenshot(screen):
     time_ss = time_ss.replace(":", ".")
     save_file_f = "screenshots/" + time_ss + ".png"
     pygame.image.save(screen, save_file_f)
-    print("Taken screenshot: " + save_file_f) 
+    print("Taken screenshot: " + save_file_f)
 
 #BTNs它创建了多个按钮对象，包括开始按钮、退出按钮、重新开始按钮、设置按钮、音频按钮、信息按钮和jk按钮。这些按钮会显示在游戏屏幕上。
 start_button = button.Button(
@@ -876,6 +894,8 @@ game_state = "start_menu"
 speaker_sp = "speaker"
 run = True
 #在游戏循环中，代码检查start_game是否为False。如果是，代码显示主菜单，其中包括开始游戏、退出游戏、访问设置和切换音频的按钮。还包括一个按钮，点击后会打开作者的GitHub页面链接。
+
+
 while run:
 
     clock.tick(FPS)
@@ -1016,6 +1036,7 @@ while run:
             MENUSELECT.play()
             run = False
         # KEYBOARD SETT
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_a:
                 moving_left = True
@@ -1049,6 +1070,7 @@ while run:
                 SCREENSHOT.play()
 
         # KEYBOARDS SETT2
+
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_a:
                 moving_left = False
