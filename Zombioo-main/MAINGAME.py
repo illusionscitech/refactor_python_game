@@ -6,7 +6,9 @@ import button
 import pyautogui
 import webbrowser
 import time
+from animations import load_animation
 import itertools
+from ai import ai
 
 pygame.init()
 
@@ -256,6 +258,7 @@ class Soldier(pygame.sprite.Sprite):
         self.frame_index = 0
         self.action = 0
         self.update_time = pygame.time.get_ticks()
+
         # AI VAR
         self.move_counter = 0
         self.vision = pygame.Rect(0, 0, 150, 20)
@@ -263,7 +266,8 @@ class Soldier(pygame.sprite.Sprite):
         self.idling_counter = 0
 
         # IDLE RUN JUMP DEATH FLIP空转跳跃死亡翻转
-        self.animation_list = self.load_animation(char_type, scale)
+        # self.animation_list = self.load_animation(char_type, scale)
+        self.animation_list = load_animation(char_type, ['Idle', 'Run', 'Jump', 'Death'], scale)  # 模块化加载动画
 
         self.image = self.animation_list[self.action][self.frame_index]
         self.rect = self.image.get_rect()
@@ -271,21 +275,6 @@ class Soldier(pygame.sprite.Sprite):
         self.width = self.image.get_width()
         self.height = self.image.get_height()
 
-    #模块化加载动画
-    def load_animation(self, char_type, scale):
-        animation_types = ['Idle', 'Run', 'Jump', 'Death']
-        animation_list = []
-
-        for animation in animation_types:
-            temp_list = []
-            num_of_frames = len(os.listdir(f'img/{char_type}/{animation}'))
-            for i in range(num_of_frames):
-                img = pygame.image.load(f'img/{char_type}/{animation}/{i}.png').convert_alpha()
-                img = pygame.transform.scale(img, (int(img.get_width() * scale), int(img.get_height() * scale)))
-                temp_list.append(img)
-            animation_list.append(temp_list)
-
-        return animation_list
 
     #更新士兵的动画和状态。在这个方法中，会调用update_animation()和check_alive()方法。
     def update(self):
@@ -386,40 +375,8 @@ class Soldier(pygame.sprite.Sprite):
             # AMMO
             self.ammo -= 1
 
-    #处理士兵的AI行为。当士兵与玩家角色的视野矩形相交时，进行射击；否则，根据移动方向进行移动。此外，还包括处理士兵的闲置状态和视野范围的更新。
     def ai(self):
-        if self.alive and player.alive:
-            if self.idling == False and random.randint(1, 400) == 1:
-                self.update_action(0)  # IDLE
-                self.idling = True
-                self.idling_counter = 45
-            if self.vision.colliderect(player.rect):
-                self.update_action(0)  # IDLE
-                #SHOOTING
-                self.shoot()
-            else:
-                if self.idling == False:
-                    if self.direction == 1:
-                        ai_moving_right = True
-                    else:
-                        ai_moving_right = False
-                    ai_moving_left = not ai_moving_right
-                    self.move(ai_moving_left, ai_moving_right)
-                    self.update_action(1)  # RUN
-                    self.move_counter += 1
-                    self.vision.center = (
-                        self.rect.centerx + 75 * self.direction, self.rect.centery)
-
-                    if self.move_counter > TILE_SIZE:
-                        self.direction *= -1
-                        self.move_counter *= -1
-                else:
-                    self.idling_counter -= 1
-                    if self.idling_counter <= 0:
-                        self.idling = False
-
-        #SCROLLBG
-        self.rect.x += screen_scroll
+        ai(self,player,TILE_SIZE,screen_scroll)
 
     #更新士兵的动画。根据时间和动画切换间隔，切换士兵当前动作的帧索引。
     def update_animation(self):
@@ -453,7 +410,7 @@ class Soldier(pygame.sprite.Sprite):
     def draw(self):
         screen.blit(pygame.transform.flip(
             self.image, self.flip, False), self.rect)
-            
+
 #负责处理关卡数据并根据瓦片值创建游戏对象。它处理障碍物、装饰物、水、出口和物品箱。
 class World():
     def __init__(self):
@@ -976,7 +933,6 @@ while run:
         draw_text('MOLOTOVS: ', font, WHITE, 10, 85)
         for x in range(player.molotovs):
             screen.blit(molotov_img, (140 + (x * 15), 75))
-        
         player.update()
         player.draw()
 
@@ -987,7 +943,7 @@ while run:
 
         zombiebullet_group.update()
         bullet_group.update()
-        grenade_group.update() 
+        grenade_group.update()
         explosion_group.update()
         moloexplosion_group.update()
         molotov_group.update()
@@ -1089,7 +1045,7 @@ while run:
                 MENUSELECT.play()
             if event.key == pygame.K_F5:
                 takescreenshot(screen)
-                MENUSELECT.play() 
+                MENUSELECT.play()
                 SCREENSHOT.play()
 
         # KEYBOARDS SETT2
